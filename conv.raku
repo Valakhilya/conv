@@ -4,6 +4,8 @@ use JSON::Tiny;
 
 sub MAIN(Str $json-file) {
 
+    my Str constant $delimeter = '|';
+
     #get json file data as list
 
     my @data = from-json $json-file.IO.slurp;
@@ -21,12 +23,12 @@ sub MAIN(Str $json-file) {
         @vals = [];
         %one-row = @data[0][$i++];
         @vals.push: %one-row{$_} for @keys;
-        @lines.push(@vals.join(';'));
+        @lines.push(@vals.join($delimeter));
     } for ^@data[0].elems;
 
     my $csv-file = $json-file.subst('.json');
     $csv-file ~= '.csv';
 
-    $csv-file.IO.spurt: @keys.join(';') ~ "\n" ~ @lines.join("\n");
+    $csv-file.IO.spurt: @keys.join($delimeter) ~ "\n" ~ @lines.join("\n");
     'done.'.say;
 }
